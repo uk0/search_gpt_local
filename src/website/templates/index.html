@@ -67,8 +67,10 @@
                     <div class="form-group">
                         <label for="llm_model">LLM Model</label>
                         <select class="form-control" id="llm_model" name="llm_model">
+                            <option value="gpt-4-1106-preview">GPT4 Turbo</option>
                             <option value="gpt-3.5-turbo">gpt-3.5-turbo (Best model that supporting ChatGPT)</option>
                             <option value="gpt-4">gpt-4 (GPT4 is in Limited preview)</option>
+                            <option value="moe-8x7">Local Moe 8x7b </option>
                             <option value="text-davinci-003"
                                     {% if request.args.get('llm_model') == 'text-davinci-003' %} selected {% endif %}
                             >text-davinci-003</option>
@@ -80,8 +82,8 @@
                     <div class="form-group">
                         <label for="language">Language<div style="display: inline; font-size: 0.8rem"> (Control bing search region and LLM response)</div></label>
                         <select class="form-control" id="language" name="language">
-                            <option value="en-US">en-US English</option>
-                            <option value="zh-CN" {% if request.args.get('language') == 'zh-CN' %} selected {% endif %}>zh-CN Chinese 中文</option>
+                            <option value="zh-CN">zh-CN Chinese</option>
+                            <option value="en-US" {% if request.args.get('language') == 'en-US' %} selected {% endif %}>zh-CN Chinese 中文</option>
                             <option value="it-IT" {% if request.args.get('language') == 'it-IT' %} selected {% endif %}>it-IT Italian Italiano</option>
                             <option value="fr-FR" {% if request.args.get('language') == 'fr-FR' %} selected {% endif %}>fr-FR French Français</option>
                             <option value="de-DE" {% if request.args.get('language') == 'de-DE' %} selected {% endif %}>de-DE German Deutsch</option>

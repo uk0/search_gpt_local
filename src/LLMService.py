@@ -8,19 +8,15 @@ import yaml
 
 from Util import setup_logger, get_project_root, storage_cached
 from website.sender import Sender, MSG_TYPE_SEARCH_STEP, MSG_TYPE_OPEN_AI_STREAM
-
 logger = setup_logger('LLMService')
-
-
 class LLMService(ABC):
     def __init__(self, config):
         self.config = config
-
     def clean_response_text(self, response_text: str):
         return response_text.replace("\n", "")
-
     def get_prompt(self, search_text: str, gpt_input_text_df: pd.DataFrame):
-        logger.info(f"OpenAIService.get_prompt. search_text: {search_text}, gpt_input_text_df.shape: {gpt_input_text_df.shape}")
+        logger.info(
+            f"OpenAIService.get_prompt. search_text: {search_text}, gpt_input_text_df.shape: {gpt_input_text_df.shape}")
         prompt_length_limit = 3000  # obsolete
         is_use_source = self.config.get('source_service').get('is_use_source')
         if is_use_source:
@@ -35,7 +31,8 @@ class LLMService(ABC):
             return f"\n\nAnswer the question '{search_text}' with about 100 words:"
 
     def get_prompt_v2(self, search_text: str, gpt_input_text_df: pd.DataFrame):
-        logger.info(f"OpenAIService.get_prompt_v2. search_text: {search_text}, gpt_input_text_df.shape: {gpt_input_text_df.shape}")
+        logger.info(
+            f"OpenAIService.get_prompt_v2. search_text: {search_text}, gpt_input_text_df.shape: {gpt_input_text_df.shape}")
         context_str = ""
         gpt_input_text_df = gpt_input_text_df.sort_values('url_id')
         url_id_list = gpt_input_text_df['url_id'].unique()
@@ -44,7 +41,7 @@ class LLMService(ABC):
             for index, row in gpt_input_text_df[gpt_input_text_df['url_id'] == url_id].iterrows():
                 context_str += f"{row['text']}\n"
             context_str += "\n"
-        prompt_length_limit = 3000 # obsolete
+        prompt_length_limit = 3000  # obsolete
         context_str = context_str[:prompt_length_limit]
         prompt = \
             f"""
@@ -69,12 +66,14 @@ Query: {search_text}
 """
             return prompt
 
-        logger.info(f"OpenAIService.get_prompt_v3. search_text: {search_text}, gpt_input_text_df.shape: {gpt_input_text_df.shape}")
+        logger.info(
+            f"OpenAIService.get_prompt_v3. search_text: {search_text}, gpt_input_text_df.shape: {gpt_input_text_df.shape}")
         context_str = ""
         for _, row_url in gpt_input_text_df[['url_id', 'url']].drop_duplicates().iterrows():
             domain = urlparse(row_url['url']).netloc.replace('www.', '')
             context_str += f"Source [{row_url['url_id']}] {domain}\n"
-            for index, row in gpt_input_text_df[(gpt_input_text_df['url_id'] == row_url['url_id']) & gpt_input_text_df['in_scope']].iterrows():
+            for index, row in gpt_input_text_df[
+                (gpt_input_text_df['url_id'] == row_url['url_id']) & gpt_input_text_df['in_scope']].iterrows():
                 context_str += f"{row['text']}\n"
             context_str += "\n\n"
         prompt_length_limit = self.config.get('llm_service').get('openai_api').get('prompt').get('prompt_length_limit')
@@ -117,8 +116,11 @@ class OpenAIService(LLMService):
         is_stream = openai_api_config.get('stream')
         logger.info(f"OpenAIService.call_api. model: {model}, len(prompt): {len(prompt)}")
 
-        if model in ['gpt-3.5-turbo', 'gpt-4']:
+        if model in ['gpt-4-1106-preview', 'gpt-3.5-turbo', 'gpt-4', 'moe-8x7']:
             try:
+                if model == "moe-8x7":
+                    print('local openai server hook \n')
+                    openai.api_base = 'http://localhost:8080/v1'
                 response = openai.ChatCompletion.create(
                     model=model,
                     messages=[

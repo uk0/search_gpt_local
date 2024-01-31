@@ -55,6 +55,9 @@ class SearchGPTService:
                 elif key == 'llm_model':
                     if self.config['llm_service']['provider'] == 'openai':
                         self.config['llm_service']['openai_api']['model'] = value
+                        print('======================================================')
+                        print(value + "\n" + 'is not supported for llm_service_provider: openai')
+                        print('======================================================')
                     elif self.config['llm_service']['provider'] == 'goose_ai':
                         self.config['llm_service']['goose_ai_api']['model'] = value
                     else:

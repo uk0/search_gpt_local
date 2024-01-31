@@ -1,5 +1,5 @@
 general:
-  language: en-US # It will determine bing search market and LLM prompt language. en-US / zh-CN / it-IT / fr-FR / de-DE / es-ES / ja-JP / ko-KR / pt-BR / ru-RU / etc.
+  language: zh-CN #en-US # It will determine bing search market and LLM prompt language. en-US / zh-CN / it-IT / fr-FR / de-DE / es-ES / ja-JP / ko-KR / pt-BR / ru-RU / etc.
 source_service:
   is_use_source: true # grounded or not grounded. If not grounded, meaning just Q&A via LLM
   is_enable_bing_search: true
@@ -7,22 +7,17 @@ source_service:
   doc_search_path:
   bing_search:
     end_point: https://api.bing.microsoft.com
-    subscription_key:
+    subscription_key: "get subscription key from https://azure.microsoft.com/en-us/try/cognitive-services/?api=bing-web-search-api"
     result_count: 3
     sentence_count_per_site: 20
     text_extract: trafilatura # beautifulsoup / trafilatura
 llm_service:
   provider: openai # openai/goose_ai
   openai_api:
-    api_key:
-    # model: gpt-3.5-turbo is the best one. Details: https://platform.openai.com/docs/models/gpt-3-5.
-    # model: gpt-4 is in limited preview
-    # model: text-babbage-001
-    # model: text-curie-001
-    # model: text-davinci-003
-    model: gpt-3.5-turbo # default
-    max_tokens: 300
-    temperature: 1
+    api_key: "get api key from https://beta.openai.com/"
+    model: gpt-4-1106-preview # default
+    max_tokens: 4096
+    temperature: 0.2
     top_p: 1
     prompt:
       prompt_token_limit: 1500
@@ -36,12 +31,12 @@ llm_service:
 cache:  # .cache result for efficiency and consistency
   is_enable:
     web: true
-    bing_search_website: false
-    bing_search_website_content: false
+    bing_search_website: true
+    bing_search_website_content: true
     openai: false
     gooseai: false
   path: .cache
-  max_number_of_cache: 50
+  max_number_of_cache: 300
 frontend_service:
   prompt_examples:
     col1_list:
